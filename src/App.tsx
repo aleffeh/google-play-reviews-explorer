@@ -34,7 +34,7 @@ function App() {
             if (!packageName)
                 return;
             setLoading(true)
-            const response = await fetch(`http://localhost/getReviews?packageName=${packageName}&sort=${sortType}`);
+            const response = await fetch(`http://${import.meta.env.DEV ? "localhost" : import.meta.env.VITE_SERVER_IP}/getReviews?packageName=${packageName}&sort=${sortType}`);
 
             const reviews = await response.json();
             setReviewsList(reviews.data);

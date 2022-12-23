@@ -15,7 +15,7 @@ app.get('/getReviews', async (req, res) => {
     console.log("sort req", sort)
     const result = await getAllAppReviewsInPlayStore(packageName, sort);
 
-    res.setHeader("Access-Control-Allow-Origin", '*')
+    res.setHeader("Access-Control-Allow-Origin", 'http://45.167.185.91/')
     res.send(JSON.stringify({data: result}))
 })
 
