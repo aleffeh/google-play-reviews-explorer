@@ -1,8 +1,19 @@
 const pkg = require("google-play-scraper");
 const {reviews, sort} = pkg;
-const getAllAppReviewsInPlayStore = async (packageName) => {
+const getAllAppReviewsInPlayStore = async (packageName, sortType) => {
 
     const reviewList = [];
+
+    let selectedSorting
+
+    if(sortType === 3)
+        selectedSorting = sort.RATING
+
+    if(sortType === 2)
+        selectedSorting = sort.NEWEST
+
+    if (sortType === 1)
+        selectedSorting = sort.HELPFULNESS
 
     let pagToken = null;
 
@@ -20,7 +31,7 @@ const getAllAppReviewsInPlayStore = async (packageName) => {
             let {data, nextPaginationToken} = await reviews({
                 appId: packageName,
                 paginate: true,
-                sort: sort.NEWEST,
+                sort: selectedSorting,
                 lang: langDict[langItem].lang,
                 country: langDict[langItem].country
             });
@@ -32,7 +43,7 @@ const getAllAppReviewsInPlayStore = async (packageName) => {
             while (pagToken != null) {
                 let {data, nextPaginationToken} = await reviews({
                     appId: packageName,
-                    sort: sort.NEWEST,
+                    sort: selectedSorting,
                     paginate: true,
                     nextPaginationToken: pagToken,
                     lang: langDict[langItem].lang,

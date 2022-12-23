@@ -26,12 +26,15 @@ function App() {
     const [packageName, setPackageName] = useState("")
     const [reviewsList, setReviewsList] = useState<IReviewsItem[] | null>()
     const [loading, setLoading] = useState(false)
+    const [sortType, setSortType] = useState(2);
 
 
     const fetchReviewsCallback = useCallback(async () => {
         try {
+            if (!packageName)
+                return;
             setLoading(true)
-            const response = await fetch(`http://localhost/getReviews?packageName=${packageName}`);
+            const response = await fetch(`http://localhost/getReviews?packageName=${packageName}&sort=${sortType}`);
 
             const reviews = await response.json();
             setReviewsList(reviews.data);
@@ -39,7 +42,7 @@ function App() {
         } catch (e) {
             setLoading(false)
         }
-    }, [packageName]);
+    }, [packageName, sortType]);
 
     return loading ? <RotatingLines
         strokeColor="grey"
@@ -49,6 +52,25 @@ function App() {
         visible={true}
     /> : (
         <div className="App">
+            <div className="sorting">
+                <p>Sort by: </p>
+                <button className={sortType === 3 ? ".selected" : undefined}
+                        onClick={() => {
+                            setSortType(3)
+                        }}>Rating
+                </button>
+                <button className={sortType === 1 ? ".selected" : undefined}
+                        onClick={() => {
+                            setSortType(1)
+                        }}>Helpfulness
+                </button>
+                <button className={sortType === 2 ? ".selected" : undefined}
+                        onClick={() => {
+
+                            setSortType(2)
+                        }}>Newest
+                </button>
+            </div>
             <div>
                 <input
                     className="packageInput"
@@ -65,7 +87,7 @@ function App() {
                 <table>
                     <tr>
                         <th>Date</th>
-                        <th>Score</th>
+                        <th>Rating</th>
                         <th>Review</th>
                         <th>Version</th>
                         <th>Relevance</th>
@@ -77,7 +99,7 @@ function App() {
                                 <td>{date}</td>
                                 <td>{review.score}</td>
                                 <td className="review">{review.text}</td>
-                                <td >{review.version}</td>
+                                <td>{review.version}</td>
                                 <td>{review.thumbsUp}</td>
                             </tr>
                         );
